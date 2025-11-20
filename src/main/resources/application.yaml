@@ -1,0 +1,14 @@
+server:
+  port: 9999
+
+spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/numsBd
+    username: nums-stream
+    password: nums-stream-password
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    change-log: classpath:/db/changelog/master.yaml
+    enabled: true
+
