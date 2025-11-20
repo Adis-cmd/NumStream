@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: nums-stream-database
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: nums-stream
+      POSTGRES_PASSWORD: nums-stream-password
+      POSTGRES_DB: numsBd
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nums-stream -d numsBd"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - nums_stream_network
+
+  app:
+    build: .
+    container_name: nums-stream-app
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "9999:8099"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/numsBd
+      SPRING_DATASOURCE_USERNAME: nums-stream
+      SPRING_DATASOURCE_PASSWORD: nums-stream-password
+      SERVER_PORT: 8099
+    networks:
+      - nums_stream_network
+
+volumes:
+  db_data:
+
+networks:
+  nums_stream_network:
+    driver: bridge

@@ -1,5 +1,5 @@
 server:
-  port: 9999
+  port: 8099
 
 spring:
   datasource:
@@ -11,4 +11,8 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/master.yaml
     enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
 
